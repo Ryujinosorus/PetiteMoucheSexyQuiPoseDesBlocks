@@ -5,13 +5,12 @@ export default class Player {
     public sprite;
     keys;
     lookR;
-    nbCoin;
     public nbTile;
     lastTimeTextAdd = 0;
-    constructor(scene, x, y) {
+    constructor(scene, x, y,nbTiles) {
         this.scene = scene;
         this.lookR = true;
-        this.nbTile = 10;
+        this.nbTile = nbTiles;
         const anims = scene.anims;
         anims.create({
             key: "player-idle",
@@ -29,15 +28,17 @@ export default class Player {
         // Create the physics-based sprite that we will move around and animate
         this.sprite = scene.physics.add.sprite(x, y, "player", 0);
         this.sprite.setScale(0.1);
+        this.sprite.body.setSize(135,135);
+        this.sprite.body.offset.x = 40;
+        this.sprite.body.offset.y = 40;
         // Track the arrow keys & WASD
         const { LEFT, RIGHT, UP, W, A, D } = Phaser.Input.Keyboard.KeyCodes;
         this.keys = scene.input.keyboard.addKeys({
             left: LEFT,
             right: RIGHT,
             up: UP,
-            w: W,
             a: A,
-            d: D
+            d: D,
         });
         this.scene.cameras.main.zoomTo(1.2, 2000);
     }
@@ -45,12 +46,9 @@ export default class Player {
     update() {
         this.moove();
         if (this.sprite.body.position.y > 900)
-            this.loose();
+            this.loose2();
     }
-
-    destroy() {
-        this.sprite.destroy();
-    }
+      
     flip() {
         this.lookR = !this.lookR,
             this.sprite.setFlipX(this.lookR);
@@ -58,12 +56,12 @@ export default class Player {
     moove() {
         const onGround = this.sprite.body.blocked.down;
         const acceleration = onGround ? 350 : 250;
-        if (this.keys.left.isDown) {
+        if (this.keys.left.isDown || this.keys.a.isDown) {
             this.sprite.body.velocity.x = -acceleration;
             if (!this.lookR)
                 this.flip();
         }
-        else if (this.keys.right.isDown) {
+        else if (this.keys.right.isDown || this.keys.d.isDown) {
             this.sprite.body.velocity.x = acceleration;
             if (this.lookR)
                 this.flip();
@@ -71,22 +69,26 @@ export default class Player {
         else
             this.sprite.body.velocity.x = 0;
 
-        if (onGround && (this.keys.up.isDown || this.keys.w.isDown)) {
+        if (onGround && (this.keys.up.isDown)) {
             while (this.sprite.body.velocity.y > -400)
                 this.sprite.body.velocity.y -= 20;
         }
         this.animeGestion();
     }
+    loose2() {
+        this.scene.scene.restart();
+    }
     win() {
-        if (this.nbCoin ==3) {
+        if (parseInt(this.scene.scene.textCoin.text[0]) == this.scene.scene.coinMap.length) {
             this.scene.start('Level5');
         }
         else {
+            console.log(this);
                 let t =this.scene.scene.add
                     .text(16, 100, "COLLECTE 3 BLOCS", {
                         font: "16px monospace",
                         fill: "##DC143C",
-                        padding: { x: this.portalPos[0]-80, y: this.portalPos[1]-100 },
+                        padding: { x: this.portalPos[0] - 80, y: this.portalPos[1]-100 },
                     });
                 this.tweens.add({
                     targets: t,
@@ -97,7 +99,9 @@ export default class Player {
             }
         }
     loose() {
-        this.scene.scene.restart();
+        console.log(this);
+        console.log("aaa");
+        this.scene.restart();
     }
     animeGestion() {
         let speed = [this.sprite.body.velocity.x, this.sprite.body.velocity.y]
@@ -116,7 +120,6 @@ export default class Player {
     }
     public addCoin(player, coin) {
         coin.disableBody(true, true);
-        this.nbCoin++;
-        console.log(this.nbCoin);
+        this.scene.scene.textCoin.setText(parseInt(this.scene.scene.textCoin.text[0])+1 + "/" + this.scene.scene.coinMap.length.toString());
     }
 }

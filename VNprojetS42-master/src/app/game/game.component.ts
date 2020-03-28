@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import Phaser from 'phaser';
 import PlatformerScene from './PlatformerScene';
 import Level2 from './Level2';
+import VN01 from './VN01';
 import { MenuScene } from './MenuScene';
 @Component({
   selector: 'app-game',
@@ -18,7 +19,7 @@ export class GameComponent implements OnInit {
       width: 800,
       height: 600,
       parent: "gameContainer",
-      scene: [MenuScene, PlatformerScene,Level2],
+        scene: [MenuScene, PlatformerScene, Level2, VN01],
       physics: {
           default: "arcade",
           arcade: {

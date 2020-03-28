@@ -10,6 +10,7 @@ export class MenuScene extends Phaser.Scene {
         this.load.image('credits', '../assets/images/creditsbutton.png');
     }
     create() {
+
         this.add.image(0, 0, 'screen').setOrigin(0).setDepth(0);
         const playbutton = this.add.image((this.game.config.width as number) / 2, (this.game.config.height as number) / 2, "jouer").setDepth(1);
         const creditbutton = this.add.image((this.game.config.width as number) / 2, (this.game.config.height as number) / 2 + (this.game.config.height as number) / 5, "credits").setDepth(1);
