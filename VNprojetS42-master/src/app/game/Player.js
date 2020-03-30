@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Player = /** @class */ (function () {
-    function Player(scene, x, y) {
+    function Player(scene, x, y, nbTiles) {
+        this.lastTimeTextAdd = 0;
         this.scene = scene;
         this.lookR = true;
-        this.nbTile = 10;
+        this.nbTile = nbTiles;
         var anims = scene.anims;
         anims.create({
             key: "player-idle",
@@ -21,25 +22,24 @@ var Player = /** @class */ (function () {
         // Create the physics-based sprite that we will move around and animate
         this.sprite = scene.physics.add.sprite(x, y, "player", 0);
         this.sprite.setScale(0.1);
+        this.sprite.body.setSize(135, 135);
+        this.sprite.body.offset.x = 40;
+        this.sprite.body.offset.y = 40;
         // Track the arrow keys & WASD
         var _a = Phaser.Input.Keyboard.KeyCodes, LEFT = _a.LEFT, RIGHT = _a.RIGHT, UP = _a.UP, W = _a.W, A = _a.A, D = _a.D;
         this.keys = scene.input.keyboard.addKeys({
             left: LEFT,
             right: RIGHT,
             up: UP,
-            w: W,
             a: A,
-            d: D
+            d: D,
         });
         this.scene.cameras.main.zoomTo(1.2, 2000);
     }
     Player.prototype.update = function () {
         this.moove();
         if (this.sprite.body.position.y > 900)
-            this.loose();
-    };
-    Player.prototype.destroy = function () {
-        this.sprite.destroy();
+            this.loose2();
     };
     Player.prototype.flip = function () {
         this.lookR = !this.lookR,
@@ -48,39 +48,54 @@ var Player = /** @class */ (function () {
     Player.prototype.moove = function () {
         var onGround = this.sprite.body.blocked.down;
         var acceleration = onGround ? 350 : 250;
-        if (this.keys.left.isDown) {
+        if (this.keys.left.isDown || this.keys.a.isDown) {
             this.sprite.body.velocity.x = -acceleration;
             if (!this.lookR)
                 this.flip();
         }
-        else if (this.keys.right.isDown) {
+        else if (this.keys.right.isDown || this.keys.d.isDown) {
             this.sprite.body.velocity.x = acceleration;
             if (this.lookR)
                 this.flip();
         }
         else
             this.sprite.body.velocity.x = 0;
-        if (onGround && (this.keys.up.isDown || this.keys.w.isDown)) {
+        if (onGround && (this.keys.up.isDown)) {
             while (this.sprite.body.velocity.y > -400)
                 this.sprite.body.velocity.y -= 20;
         }
         this.animeGestion();
     };
+    Player.prototype.loose2 = function () {
+        this.scene.scene.restart();
+    };
     Player.prototype.win = function () {
-        if (this.nbCoin == 3) {
-            this.scene.start('Level5');
+        if (parseInt(this.scene.scene.textCoin.text[0]) == this.scene.scene.coinMap.length) {
+            var indiceLevel = (parseInt(this.scene.scene.sys.settings.key[5]) + 1);
+            if (indiceLevel === 4)
+                this.scene.start("menu");
+            this.scene.start("Level" + indiceLevel);
         }
         else {
-            this.scene.scene.add
+            console.log(this);
+            var t = this.scene.scene.add
                 .text(16, 100, "COLLECTE 3 BLOCS", {
                 font: "16px monospace",
-                fill: "#ffffff",
-                padding: { x: this.scene.portalPos[0], y: this.scene.portalPos[1] },
+                fill: "#8B0000",
+                padding: { x: this.scene.scene.portalPos[0] - 80, y: this.scene.scene.portalPos[1] - 100 },
             });
+            this.scene.scene.tweens.add({
+                targets: t,
+                alpha: 0,
+                duration: 1000,
+                ease: 'Power2'
+            }, this);
         }
     };
     Player.prototype.loose = function () {
-        this.scene.scene.restart();
+        console.log(this);
+        console.log("aaa");
+        this.scene.restart();
     };
     Player.prototype.animeGestion = function () {
         var speed = [this.sprite.body.velocity.x, this.sprite.body.velocity.y];
@@ -99,8 +114,12 @@ var Player = /** @class */ (function () {
     };
     Player.prototype.addCoin = function (player, coin) {
         coin.disableBody(true, true);
-        this.nbCoin++;
-        console.log(this.nbCoin);
+        this.scene.scene.textCoin.setText(parseInt(this.scene.scene.textCoin.text[0]) + 1 + "/" + this.scene.scene.coinMap.length.toString());
+    };
+    Player.prototype.bonusBlock = function (player, bonus) {
+        bonus.disableBody(true, true);
+        this.scene.scene.player.nbTile += 5;
+        this.scene.scene.textBlock.setText(this.scene.scene.player.nbTile);
     };
     return Player;
 }());

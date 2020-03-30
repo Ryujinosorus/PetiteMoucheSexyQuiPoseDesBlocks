@@ -44,7 +44,6 @@ export default class PlatformerScene extends Phaser.Scene {
                 margin: 0,
             }
         );
-        this.load.image("spike", "../assets/images/0x72-industrial-spike.png");
         this.load.image("tiles", "../assets/tilesets/tilesets.png");
         this.load.image("coin", "../../assets/coin.png");
 
@@ -93,7 +92,7 @@ export default class PlatformerScene extends Phaser.Scene {
 
         map.createDynamicLayer("Background", tiles);
         this.groundLayer = map.createDynamicLayer("Ground", tiles);
-        const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point") as any
+        const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point") as any;
         this.player = new Player(this, spawnPoint.x, spawnPoint.y, 10);
 
 
@@ -101,7 +100,7 @@ export default class PlatformerScene extends Phaser.Scene {
 
         this.coinMap.forEach((element) => {
             let tmp = this.coinGroup.create(element[0], element[1], "coin");
-            tmp.setSize(0.1, 0.1);
+            tmp.setSize(25,25);
             tmp.scale = 0.05;
         }
         );
@@ -132,7 +131,7 @@ export default class PlatformerScene extends Phaser.Scene {
         this.portal.setSize(80, 90);
 
         this.add
-            .text(16, 100, "Utilise les flèches pour te déplacer \n Pour poser des blocs, utilise le clic gauche", {
+            .text(16, 100, "Utilise les flÃ¨ches pour te dÃ©placer \nPour poser des blocs, utilise le clic gauche", {
                 font: "16px monospace",
                 fill: "#ffffff",
                 padding: { x: 20, y: 10 },
@@ -142,7 +141,7 @@ export default class PlatformerScene extends Phaser.Scene {
         this.imageCoin.scale = 0.05;
         this.imageCoin.setScrollFactor(0);
 
-        this.textCoin = this.add.text(130, 90, "0 / " + this.coinMap.length, {
+        this.textCoin = this.add.text(130, 90, "0" + "/" +  this.coinMap.length, {
             font: "24px monospace",
             fill: "#ffffff",
         }).setScrollFactor(0);

@@ -21,29 +21,36 @@ var MenuScene = /** @class */ (function (_super) {
     MenuScene.prototype.preload = function () {
         this.load.image('screen', '../assets/images/menu.png');
         this.load.image('jouer', '../assets/images/jouerbutton.png');
+        this.load.image('jouer-hover', '../assets/images/jouerbuttonhover.png');
         this.load.image('credits', '../assets/images/creditsbutton.png');
+        this.load.image('credits-hover', '../assets/images/creditsbuttonhover.png');
     };
     MenuScene.prototype.create = function () {
         var _this = this;
         this.add.image(0, 0, 'screen').setOrigin(0).setDepth(0);
-        var playbutton = this.add.image(this.game.config.width / 2, this.game.config.height / 2, "jouer").setDepth(1);
-        var creditbutton = this.add.image(this.game.config.width / 2, this.game.config.height / 2 + this.game.config.height / 5, "credits").setDepth(1);
-        playbutton.setInteractive();
-        playbutton.on('pointerover', function (pointer) {
-            playbutton.setScale(1.5, 1.5);
+        this.playbutton = this.add.image(this.game.config.width / 2, this.game.config.height / 2, "jouer").setDepth(1);
+        this.creditbutton = this.add.image(this.game.config.width / 2, this.game.config.height / 2 + this.game.config.height / 5, "credits").setDepth(1);
+        this.playbutton.setScale(0.8, 0.8);
+        this.creditbutton.setScale(0.8, 0.8);
+        this.playbutton.setInteractive({ useHandCursor: true });
+        this.playbutton.on('pointerover', function (pointer) {
+            _this.playbutton.setTexture("jouer-hover");
         });
-        playbutton.on('pointerout', function (pointer) {
-            playbutton.setScale(1, 1);
+        this.playbutton.on('pointerout', function (pointer) {
+            _this.playbutton.setTexture("jouer");
         });
-        creditbutton.setInteractive();
-        creditbutton.on('pointerover', function (pointer) {
-            creditbutton.setScale(1.5, 1.5);
+        this.creditbutton.setInteractive({ useHandCursor: true });
+        this.creditbutton.on('pointerover', function (pointer) {
+            _this.creditbutton.setTexture("credits-hover");
         });
-        creditbutton.on('pointerout', function (pointer) {
-            creditbutton.setScale(1, 1);
+        this.creditbutton.on('pointerout', function (pointer) {
+            _this.creditbutton.setTexture("credits");
         });
-        playbutton.on('pointerup', function (pointer) {
+        this.playbutton.on('pointerup', function (pointer) {
             _this.scene.start('Level1');
+        }, this);
+        this.creditbutton.on('pointerup', function (pointer) {
+            _this.scene.start('credit');
         }, this);
     };
     MenuScene.prototype.update = function () {

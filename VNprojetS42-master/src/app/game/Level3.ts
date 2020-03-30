@@ -1,34 +1,46 @@
 import Player from './Player';
+import Ennemy from './Ennemy';
 import MouseTileMarker from './MouseTileMarker';
+import { debug } from 'util';
 
-export default class Level2 extends Phaser.Scene {
+export default class PlatformerScene extends Phaser.Scene {
     groundLayer;
     public player;
     coinGroup;
     marker;
     coinMap;
     portalPos;
+
+    ennemyGroup;
+    ennemyPos;
+
+    horseGroup;
+    horsePos;
+
     portal;
     background;
-    nbCoin;
+    middleground;
+    frontground;
 
     textCoin;
     textBlock;
     imageCoin;
     imageBlock;
 
-    ennemyPos;
-    ennemyGroup;
-
     demence;
     lastDemenceUp;
 
+    bonusBlockPos;
+    bonusBlockGroup;
+
+
     constructor() {
-        super('Level2');
-        this.coinMap = [[65, 35], [900, 500], [700, 40]];
-        this.portalPos = [1050, 200];
+        super('Level3');
+        this.coinMap = [[450, 155], [920, 300], [650, 555],[920,45]];
+        this.portalPos = [1125, 230];
         this.ennemyPos = [[100, 800]];
-        this.nbCoin = 0;
+        this.horsePos = [[430, 140, 650], [430, 540, 650]];
+        this.bonusBlockPos = [[910,425]];
         this.lastDemenceUp = 0;
     }
     preload() {
@@ -41,16 +53,8 @@ export default class Level2 extends Phaser.Scene {
                 margin: 0,
             }
         );
-        this.load.spritesheet(
-            "fireSkull",
-            "../../assets/spritesheets/fire-skull.png",
-            {
-                frameWidth: 96,
-                frameHeight: 112,
-                margin: 0,
-            }
-        );
-        this.load.image("tiles2", "../assets/tilesets/tileset2.png");
+        
+        this.load.image("tiles3", "../assets/tilesets/tileset.png");
         this.load.image("coin", "../../assets/coin.png");
 
         this.load.spritesheet(
@@ -63,44 +67,87 @@ export default class Level2 extends Phaser.Scene {
             }
         );
 
-        this.load.image('background2', '../../assets/images/test.jpg');
+        this.load.image('background3', '../../assets/images/bg-1.png');
+        this.load.image('middleground3', '../../assets/images/bg-2.png');
+        this.load.image('frontground3', '../../assets/images/bg-3.png');
 
-        this.load.tilemapTiledJSON("map2", "../../assets/tilemaps/level-deux.json");
+        this.load.tilemapTiledJSON("map3", "../../assets/tilemaps/level-trois.json");
 
         this.load.image("block", "../../assets/quartz.png");
 
-        this.load.image("demence", "../../assets/demence.png")
+        this.load.image("demence", "../../assets/demence.png");
+
+        this.load.spritesheet(
+            "fireSkull",
+            "../../assets/spritesheets/fire-skull.png",
+            {
+                frameWidth: 96,
+                frameHeight: 112,
+                margin: 0,
+            }
+        );
+
+        this.load.spritesheet(
+            "horse",
+            "../../assets/spritesheets/horse.png",
+            {
+                frameWidth: 144,
+                frameHeight: 96,
+                margin: 0,
+            }
+        );
     }
 
     create() {
 
-        this.demence = this.add.sprite(220, 100, 'demence');
-        this.demence.setScrollFactor(0);
-        this.demence.scaleX = 0.0;
-        this.demence.scaleY = 0.02;
-        this.demence.setOrigin(0, 0.5);
-
-        this.background = this.add.tileSprite(0, 0, this.game.config.width as number, this.game.config.height as number, 'background2');
+        this.background = this.add.tileSprite(0, 0, this.game.config.width as number, this.game.config.height as number, 'background3');
+        this.middleground = this.add.tileSprite(0, 0, this.game.config.width as number, this.game.config.height as number, 'middleground3');
+        this.middleground.setOrigin(0, 0);
+        this.middleground.setScrollFactor(0);
         this.background.setOrigin(0, 0);
         this.background.setScrollFactor(0);
+        this.frontground = this.add.tileSprite(0, 0, this.game.config.width as number, this.game.config.height as number, 'frontground3');
+        this.frontground.setOrigin(0, 0);
+        this.frontground.setScrollFactor(0);
 
 
-        const map = this.make.tilemap({ key: "map2" });
-        const tiles = map.addTilesetImage("tileset", "tiles2");
+        const map = this.make.tilemap({ key: "map3" });
+        const tiles = map.addTilesetImage("tileset", "tiles3");
 
         map.createDynamicLayer("Background", tiles);
-        map.createDynamicLayer("Foreground", tiles);
         this.groundLayer = map.createDynamicLayer("Ground", tiles);
-        const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point") as any
-        this.player = new Player(this, spawnPoint.x, spawnPoint.y,15);
+        const spawnPoint = map.findObject("Objects", obj => obj.name === "Spawn Point") as any;
+        this.player = new Player(this, spawnPoint.x, spawnPoint.y, 1);
+
 
         this.coinGroup = this.physics.add.staticGroup();
+
         this.coinMap.forEach((element) => {
-            let tmp = this.coinGroup.create(element[0], element[1], "coin");
+                let tmp = this.coinGroup.create(element[0], element[1], "coin");
+                tmp.setSize(25, 25);
+                tmp.scale = 0.05;
+            }
+        );
+
+
+        this.bonusBlockGroup = this.physics.add.staticGroup();
+        this.bonusBlockPos.forEach((element) => {
+            let tmp = this.bonusBlockGroup.create(element[0], element[1], "block");
             tmp.setSize(25, 25);
-            tmp.scale = 0.05;
+            tmp.scale = 0.08;
         }
         );
+
+
+        this.horseGroup = this.physics.add.staticGroup();
+        this.horsePos.forEach((element) => {
+            let tmp = this.horseGroup.create(element[0], element[1], "horse");
+            tmp.setSize(75, 60);
+            tmp.scaleX = 0.7;
+            tmp.scaleY = 0.7;
+            }
+        );
+
 
         this.ennemyGroup = this.physics.add.staticGroup();
         this.ennemyPos.forEach((element) => {
@@ -129,6 +176,17 @@ export default class Level2 extends Phaser.Scene {
 
         }, this);;
 
+        this.horseGroup.getChildren().forEach(function (enemy) {
+            const anims = this.anims;
+            anims.create({
+                key: "horse-run",
+                frames: anims.generateFrameNumbers("horse", { start: 0, end: 3 }),
+                frameRate: 15,
+                repeat: -1
+            });
+            enemy.anims.play("horse-run", true)
+
+        }, this);;
 
         this.groundLayer.setCollisionByProperty({ collides: true });
         this.physics.world.addCollider(this.player.sprite, this.groundLayer);
@@ -138,31 +196,26 @@ export default class Level2 extends Phaser.Scene {
 
         this.marker = new MouseTileMarker(this, map);
 
+        const anims = this.anims;
 
-
-        let config = {
-            key: 'walk',
-            frames: this.anims.generateFrameNumbers('portal', { start: 0, end: 25 }),
-            frameRate: 6,
-            yoyo: false,
-            repeat: -1
-        };
-
-        let anim = this.anims.create(config);
         this.portal = this.physics.add.sprite(this.portalPos[0], this.portalPos[1], "portal");
+        anims.create({
+            key: "walk",
+            frames: anims.generateFrameNumbers("portal", { start: 10, end: 30 }),
+            frameRate: 12,
+            repeat: -1
+        });
         this.portal.anims.load('walk');
-        this.portal.anims.play('walk');
+        this.portal.anims.play("walk", true);
         this.portal.body.allowGravity = false;
         this.portal.setSize(80, 90);
-        console.log(this.portal);
+
 
         this.imageCoin = this.add.image(100, 100, "coin");
         this.imageCoin.scale = 0.05;
         this.imageCoin.setScrollFactor(0);
 
-
-        this.nbCoin = 0;
-        this.textCoin = this.add.text(130, 90, this.nbCoin.toString(), {
+        this.textCoin = this.add.text(130, 90, "0/" + this.coinMap.length, {
             font: "24px monospace",
             fill: "#ffffff",
         }).setScrollFactor(0);
@@ -180,18 +233,9 @@ export default class Level2 extends Phaser.Scene {
         this.demence.scaleX = 0.0;
         this.demence.scaleY = 0.02;
         this.demence.setOrigin(0, 0.5);
-
-        this.add
-            .text(16, 105, "FireSkull est timide ! \nFixe le, pour qu'il detourne le regard !", {
-                font: "16px monospace",
-                fill: "#ffffff",
-                padding: { x: 20, y: 10 },
-            });
-
     }
 
     update(time, delta) {
-
         if (this.lastDemenceUp + 1000 < Date.now()) {
             if (this.demence.scaleX < 0.5) {
                 this.demence.scaleX += 0.01;
@@ -200,6 +244,9 @@ export default class Level2 extends Phaser.Scene {
             else this.player.loose2();
         }
 
+
+        this.frontground.tilePositionX = this.cameras.main.scrollX * 0.3;
+        this.middleground.tilePositionX = this.cameras.main.scrollX * 0.2;
         this.background.tilePositionX = this.cameras.main.scrollX * 0.1;
 
         this.marker.update();
@@ -213,6 +260,9 @@ export default class Level2 extends Phaser.Scene {
 
         this.physics.world.overlap(this.player.sprite, this.ennemyGroup, this.player.loose, null, this);
 
+        this.physics.world.overlap(this.player.sprite, this.horseGroup, this.player.loose, null, this);
+
+        this.physics.world.overlap(this.player.sprite, this.bonusBlockGroup, this.player.bonusBlock, null, this);
 
         this.ennemyGroup.getChildren().forEach(function (enemy) {
             let playerAtTheRight = enemy.body.x < this.player.sprite.x;
@@ -227,7 +277,16 @@ export default class Level2 extends Phaser.Scene {
             }
             else enemy.flipX = !playerAtTheRight;
         }, this);
+        var cpt = 0;
+        this.horseGroup.getChildren().forEach(function (horse) {
+            if (horse.x <= this.horsePos[cpt][0] || horse.x >= this.horsePos[cpt][2])
+                horse.flipX = !horse.flipX;
 
+            let speedX = horse.flipX ? 1.2 : -1.2;
+            horse.x += speedX;
+            horse.body.x += speedX;
+            cpt++;
+        }, this);
     }
 
     draw() {
@@ -237,7 +296,7 @@ export default class Level2 extends Phaser.Scene {
             this.marker.canDraw = false;
             this.player.nbTile--;
             this.textBlock.setText(this.player.nbTile);
-            const tile = this.groundLayer.putTileAtWorldXY(166, worldPoint.x, worldPoint.y);
+            const tile = this.groundLayer.putTileAtWorldXY(109, worldPoint.x, worldPoint.y);
             tile.setCollision(true);
         }
         else if (!pointer.isDown)

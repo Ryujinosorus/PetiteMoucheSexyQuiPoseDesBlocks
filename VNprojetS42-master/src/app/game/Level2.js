@@ -37,7 +37,6 @@ var Level2 = /** @class */ (function (_super) {
             frameHeight: 112,
             margin: 0,
         });
-        this.load.image("spike", "../assets/images/0x72-industrial-spike.png");
         this.load.image("tiles2", "../assets/tilesets/tileset2.png");
         this.load.image("coin", "../../assets/coin.png");
         this.load.spritesheet("portal", "../../assets/portail.png", {
@@ -45,8 +44,7 @@ var Level2 = /** @class */ (function (_super) {
             frameHeight: 130,
             margin: 0,
         });
-        this.load.image('background', '../../assets/images/background.png');
-        this.load.image('middleground', '../../assets/images/middleground.png');
+        this.load.image('background2', '../../assets/images/test.jpg');
         this.load.tilemapTiledJSON("map2", "../../assets/tilemaps/level-deux.json");
         this.load.image("block", "../../assets/quartz.png");
         this.load.image("demence", "../../assets/demence.png");
@@ -58,16 +56,7 @@ var Level2 = /** @class */ (function (_super) {
         this.demence.scaleX = 0.0;
         this.demence.scaleY = 0.02;
         this.demence.setOrigin(0, 0.5);
-        this.add
-            .text(16, 100, "Utilise les flèches pour te déplacer \n Pour poser des blocs, utilise le clic gauche", {
-            font: "16px monospace",
-            fill: "#ffffff",
-            padding: { x: 20, y: 10 },
-        });
-        this.background = this.add.tileSprite(0, 0, this.game.config.width, this.game.config.height, 'background');
-        this.middleground = this.add.tileSprite(0, 0, this.game.config.width, this.game.config.height, 'middleground');
-        this.middleground.setOrigin(0, 0);
-        this.middleground.setScrollFactor(0);
+        this.background = this.add.tileSprite(0, 0, this.game.config.width, this.game.config.height, 'background2');
         this.background.setOrigin(0, 0);
         this.background.setScrollFactor(0);
         var map = this.make.tilemap({ key: "map2" });
@@ -80,7 +69,7 @@ var Level2 = /** @class */ (function (_super) {
         this.coinGroup = this.physics.add.staticGroup();
         this.coinMap.forEach(function (element) {
             var tmp = _this.coinGroup.create(element[0], element[1], "coin");
-            tmp.setSize(0.1, 0.1);
+            tmp.setSize(25, 25);
             tmp.scale = 0.05;
         });
         this.ennemyGroup = this.physics.add.staticGroup();
@@ -144,6 +133,12 @@ var Level2 = /** @class */ (function (_super) {
         this.demence.scaleX = 0.0;
         this.demence.scaleY = 0.02;
         this.demence.setOrigin(0, 0.5);
+        this.add
+            .text(16, 105, "FireSkull est timide ! \nFixe le, pour qu'il detourne le regard !", {
+            font: "16px monospace",
+            fill: "#ffffff",
+            padding: { x: 20, y: 10 },
+        });
     };
     Level2.prototype.update = function (time, delta) {
         if (this.lastDemenceUp + 1000 < Date.now()) {
@@ -154,7 +149,6 @@ var Level2 = /** @class */ (function (_super) {
             else
                 this.player.loose2();
         }
-        this.middleground.tilePositionX = this.cameras.main.scrollX * 0.2;
         this.background.tilePositionX = this.cameras.main.scrollX * 0.1;
         this.marker.update();
         this.player.update();

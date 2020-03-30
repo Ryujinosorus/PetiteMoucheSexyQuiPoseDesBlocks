@@ -1,4 +1,5 @@
 import { Data } from "phaser";
+import { parse } from "path";
 
 export default class Player {
     scene;
@@ -80,17 +81,20 @@ export default class Player {
     }
     win() {
         if (parseInt(this.scene.scene.textCoin.text[0]) == this.scene.scene.coinMap.length) {
-            this.scene.start('Level5');
+            let indiceLevel = (parseInt(this.scene.scene.sys.settings.key[5]) + 1);
+            if (indiceLevel === 4)
+                this.scene.start("menu");
+            this.scene.start("Level" + indiceLevel);
         }
         else {
             console.log(this);
                 let t =this.scene.scene.add
                     .text(16, 100, "COLLECTE 3 BLOCS", {
                         font: "16px monospace",
-                        fill: "##DC143C",
-                        padding: { x: this.portalPos[0] - 80, y: this.portalPos[1]-100 },
+                        fill: "#8B0000",
+                        padding: { x: this.scene.scene.portalPos[0] - 80, y: this.scene.scene.portalPos[1]-100 },
                     });
-                this.tweens.add({
+                this.scene.scene.tweens.add({
                     targets: t,
                     alpha: 0,
                     duration: 1000,
@@ -121,5 +125,10 @@ export default class Player {
     public addCoin(player, coin) {
         coin.disableBody(true, true);
         this.scene.scene.textCoin.setText(parseInt(this.scene.scene.textCoin.text[0])+1 + "/" + this.scene.scene.coinMap.length.toString());
+    }
+    public bonusBlock(player, bonus) {
+        bonus.disableBody(true, true);
+        this.scene.scene.player.nbTile += 5;
+        this.scene.scene.textBlock.setText(this.scene.scene.player.nbTile);
     }
 }
