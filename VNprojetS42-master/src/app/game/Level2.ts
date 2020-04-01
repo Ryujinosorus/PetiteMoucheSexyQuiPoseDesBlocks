@@ -23,6 +23,12 @@ export default class Level2 extends Phaser.Scene {
     demence;
     lastDemenceUp;
 
+    jumpSoung;
+    coinSoung;
+    deathSoung;
+    popSoung;
+
+
     constructor() {
         super('Level2');
         this.coinMap = [[65, 35], [900, 500], [700, 40]];
@@ -70,6 +76,23 @@ export default class Level2 extends Phaser.Scene {
         this.load.image("block", "../../assets/quartz.png");
 
         this.load.image("demence", "../../assets/demence.png")
+
+        this.load.audio('jumpS', [
+            '../../assets/audio/jump.ogg',
+            '../../assets/audio/jump.mp3'
+        ]);
+        this.load.audio('coinS', [
+            '../../assets/audio/coin.ogg',
+            '../../assets/audio/coin.mp3'
+        ]);
+        this.load.audio('deathS', [
+            '../../assets/audio/die.ogg',
+            '../../assets/audio/die.mp3'
+        ]);
+        this.load.audio('popS', [
+            '../../assets/audio/pop.ogg',
+            '../../assets/audio/pop.mp3'
+        ]);
     }
 
     create() {
@@ -162,7 +185,7 @@ export default class Level2 extends Phaser.Scene {
 
 
         this.nbCoin = 0;
-        this.textCoin = this.add.text(130, 90, this.nbCoin.toString(), {
+        this.textCoin = this.add.text(130, 90, "0" + "/" + this.coinMap.length, {
             font: "24px monospace",
             fill: "#ffffff",
         }).setScrollFactor(0);
@@ -187,6 +210,12 @@ export default class Level2 extends Phaser.Scene {
                 fill: "#ffffff",
                 padding: { x: 20, y: 10 },
             });
+
+        this.jumpSoung = this.sound.add('jumpS');
+        this.coinSoung = this.sound.add('coinS');
+        this.deathSoung = this.sound.add('deathS');
+        this.popSoung = this.sound.add('popS');
+        this.coinSoung.volume = 10;
 
     }
 
@@ -234,6 +263,7 @@ export default class Level2 extends Phaser.Scene {
         const pointer = this.input.activePointer;
         const worldPoint = pointer.positionToCamera(this.cameras.main) as any;
         if (pointer.isDown && this.player.nbTile > 0 && this.marker.canDraw) {
+            this.popSoung.play();
             this.marker.canDraw = false;
             this.player.nbTile--;
             this.textBlock.setText(this.player.nbTile);

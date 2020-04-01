@@ -91,37 +91,22 @@ var CreditScene = /** @class */ (function (_super) {
         this.jason.play("jason-idle");
         this.jason.on('pointerover', function (pointer) {
             _this.jasonText.setStyle({ fill: "#edc400" });
-            _this.jason.play("jason-attack").on('animationcomplete', function () {
-                _this.jason.play("jason-idle");
-            }, _this);
         });
         this.matthias.play("matthias-idle");
         this.matthias.on('pointerover', function (pointer) {
             _this.matthiasText.setStyle({ fill: "#ba0ade" });
-            _this.matthias.play("matthias-attack").on('animationcomplete', function () {
-                _this.matthias.play("matthias-idle");
-            }, _this);
         });
         this.naim.play("naim-idle");
         this.naim.on('pointerover', function (pointer) {
             _this.naimText.setStyle({ fill: "#e80027" });
-            _this.naim.play("naim-attack").on('animationcomplete', function () {
-                _this.naim.play("naim-idle");
-            }, _this);
         });
         this.alex.play("alex-idle");
         this.alex.on('pointerover', function (pointer) {
             _this.alexText.setStyle({ fill: "#00ea0a" });
-            _this.alex.play("alex-attack").on('animationcomplete', function () {
-                _this.alex.play("alex-idle");
-            }, _this);
         });
         this.thomas.play("thomas-idle");
         this.thomas.on('pointerover', function (pointer) {
             _this.thomasText.setStyle({ fill: "#0aa9de" });
-            _this.thomas.play("thomas-attack").on('animationcomplete', function () {
-                _this.thomas.play("thomas-idle");
-            }, _this);
         });
         this.jason.on('pointerout', function (pointer) {
             _this.jasonText.setStyle({ fill: "#ffffff" });

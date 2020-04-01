@@ -47,7 +47,7 @@ var MenuScene = /** @class */ (function (_super) {
             _this.creditbutton.setTexture("credits");
         });
         this.playbutton.on('pointerup', function (pointer) {
-            _this.scene.start('Level1');
+            _this.scene.start('VN01');
         }, this);
         this.creditbutton.on('pointerup', function (pointer) {
             _this.scene.start('credit');

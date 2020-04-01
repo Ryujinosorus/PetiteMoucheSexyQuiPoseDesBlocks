@@ -97,41 +97,26 @@ export default class CreditScene extends Phaser.Scene {
         this.jason.play("jason-idle");
         this.jason.on('pointerover', (pointer) => {
             this.jasonText.setStyle({ fill: "#edc400" });
-            this.jason.play("jason-attack").on('animationcomplete', () => {
-                this.jason.play("jason-idle");
-            }, this);
         });
 
         this.matthias.play("matthias-idle");
         this.matthias.on('pointerover', (pointer) => {
             this.matthiasText.setStyle({ fill: "#ba0ade" });
-            this.matthias.play("matthias-attack").on('animationcomplete', () => {
-                this.matthias.play("matthias-idle");
-            }, this);
         });
 
         this.naim.play("naim-idle");
         this.naim.on('pointerover', (pointer) => {
             this.naimText.setStyle({ fill: "#e80027" });
-            this.naim.play("naim-attack").on('animationcomplete', () => {
-                this.naim.play("naim-idle");
-            }, this);
         });
 
         this.alex.play("alex-idle");
         this.alex.on('pointerover', (pointer) => {
             this.alexText.setStyle({ fill: "#00ea0a" });
-            this.alex.play("alex-attack").on('animationcomplete', () => {
-                this.alex.play("alex-idle");
-            }, this);
         });
 
         this.thomas.play("thomas-idle");
         this.thomas.on('pointerover', (pointer) => {
             this.thomasText.setStyle({ fill: "#0aa9de" });
-            this.thomas.play("thomas-attack").on('animationcomplete', () => {
-                this.thomas.play("thomas-idle");
-            }, this);
         });
 
         this.jason.on('pointerout', (pointer) => {

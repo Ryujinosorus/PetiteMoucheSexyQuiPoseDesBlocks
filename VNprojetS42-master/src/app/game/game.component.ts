@@ -6,6 +6,10 @@ import Level2 from './Level2';
 import { MenuScene } from './MenuScene';
 import CreditScene from './CreditScene';
 import Level3 from './Level3';
+import VN01 from './VN01';
+import VN02 from './VN02';
+import VN03 from './VN03';
+import VN04 from './VN04';
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
@@ -19,8 +23,8 @@ export class GameComponent implements OnInit {
       type: Phaser.AUTO,
       width: 800,
       height: 600,
-      parent: "gameContainer",
-        scene: [MenuScene, PlatformerScene, Level2, Level3, CreditScene],
+        parent: "gameContainer",
+        scene: [MenuScene, PlatformerScene, Level2, Level3, CreditScene, VN01, VN02, VN03, VN04],
       physics: {
           default: "arcade",
           arcade: {

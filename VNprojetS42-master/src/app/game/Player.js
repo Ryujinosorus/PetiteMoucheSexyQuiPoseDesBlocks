@@ -35,6 +35,10 @@ var Player = /** @class */ (function () {
             d: D,
         });
         this.scene.cameras.main.zoomTo(1.2, 2000);
+        this.scene.input.keyboard.on('keydown_E', function (event) {
+            console.log(this.scene.player);
+            this.scene.player.loose2();
+        });
     }
     Player.prototype.update = function () {
         this.moove();
@@ -61,12 +65,14 @@ var Player = /** @class */ (function () {
         else
             this.sprite.body.velocity.x = 0;
         if (onGround && (this.keys.up.isDown)) {
+            this.scene.jumpSoung.play();
             while (this.sprite.body.velocity.y > -400)
                 this.sprite.body.velocity.y -= 20;
         }
         this.animeGestion();
     };
     Player.prototype.loose2 = function () {
+        this.scene.deathSoung.play();
         this.scene.scene.restart();
     };
     Player.prototype.win = function () {
@@ -74,7 +80,7 @@ var Player = /** @class */ (function () {
             var indiceLevel = (parseInt(this.scene.scene.sys.settings.key[5]) + 1);
             if (indiceLevel === 4)
                 this.scene.start("menu");
-            this.scene.start("Level" + indiceLevel);
+            this.scene.start("VN0" + indiceLevel);
         }
         else {
             console.log(this);
@@ -93,8 +99,7 @@ var Player = /** @class */ (function () {
         }
     };
     Player.prototype.loose = function () {
-        console.log(this);
-        console.log("aaa");
+        this.scene.scene.deathSoung.play();
         this.scene.restart();
     };
     Player.prototype.animeGestion = function () {
@@ -113,6 +118,7 @@ var Player = /** @class */ (function () {
             this.sprite.anims.play("player-idle", true);
     };
     Player.prototype.addCoin = function (player, coin) {
+        this.scene.scene.coinSoung.play();
         coin.disableBody(true, true);
         this.scene.scene.textCoin.setText(parseInt(this.scene.scene.textCoin.text[0]) + 1 + "/" + this.scene.scene.coinMap.length.toString());
     };

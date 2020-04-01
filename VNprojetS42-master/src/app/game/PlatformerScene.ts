@@ -27,6 +27,11 @@ export default class PlatformerScene extends Phaser.Scene {
     horseGroup;
     horsePos;
 
+    jumpSoung;
+    coinSoung;
+    deathSoung;
+    popSoung;
+
     constructor() {
         super('Level1');
         this.coinMap = [[80, 410], [955, 100], [700, 410]];
@@ -75,6 +80,24 @@ export default class PlatformerScene extends Phaser.Scene {
                 margin: 0,
             }
         );
+
+        this.load.audio('jumpS', [
+            '../../assets/audio/jump.ogg',
+            '../../assets/audio/jump.mp3'
+        ]);
+        this.load.audio('coinS', [
+            '../../assets/audio/coin.ogg',
+            '../../assets/audio/coin.mp3'
+        ]);
+        this.load.audio('deathS', [
+            '../../assets/audio/die.ogg',
+            '../../assets/audio/die.mp3'
+        ]);
+        this.load.audio('popS', [
+            '../../assets/audio/pop.ogg',
+            '../../assets/audio/pop.mp3'
+        ]);
+
     }
 
     create() {
@@ -131,7 +154,7 @@ export default class PlatformerScene extends Phaser.Scene {
         this.portal.setSize(80, 90);
 
         this.add
-            .text(16, 100, "Utilise les flèches pour te déplacer \nPour poser des blocs, utilise le clic gauche", {
+            .text(16, 100, "Utilise les flèches pour te déplacer \nPour poser des blocs, utilise le clic gauche\nPour recommencer appuie sur E", {
                 font: "16px monospace",
                 fill: "#ffffff",
                 padding: { x: 20, y: 10 },
@@ -175,6 +198,13 @@ export default class PlatformerScene extends Phaser.Scene {
             console.log(tmp);
         }
         );
+
+        this.jumpSoung = this.sound.add('jumpS');
+        this.coinSoung = this.sound.add('coinS');
+        this.deathSoung = this.sound.add('deathS');
+        this.popSoung = this.sound.add('popS');
+        this.coinSoung.volume = 10;
+
     }
 
     update(time, delta) {
@@ -205,6 +235,7 @@ export default class PlatformerScene extends Phaser.Scene {
         const pointer = this.input.activePointer;
         const worldPoint = pointer.positionToCamera(this.cameras.main) as any;
         if (pointer.isDown && this.player.nbTile > 0 && this.marker.canDraw) {
+            this.popSoung.play();
             this.marker.canDraw = false;
             this.player.nbTile--;
             this.textBlock.setText(this.player.nbTile);

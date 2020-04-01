@@ -33,6 +33,10 @@ export default class PlatformerScene extends Phaser.Scene {
     bonusBlockPos;
     bonusBlockGroup;
 
+    jumpSoung;
+    coinSoung;
+    deathSoung;
+    popSoung;
 
     constructor() {
         super('Level3');
@@ -96,6 +100,23 @@ export default class PlatformerScene extends Phaser.Scene {
                 margin: 0,
             }
         );
+
+        this.load.audio('jumpS', [
+            '../../assets/audio/jump.ogg',
+            '../../assets/audio/jump.mp3'
+        ]);
+        this.load.audio('coinS', [
+            '../../assets/audio/coin.ogg',
+            '../../assets/audio/coin.mp3'
+        ]);
+        this.load.audio('deathS', [
+            '../../assets/audio/die.ogg',
+            '../../assets/audio/die.mp3'
+        ]);
+        this.load.audio('popS', [
+            '../../assets/audio/pop.ogg',
+            '../../assets/audio/pop.mp3'
+        ]);
     }
 
     create() {
@@ -233,6 +254,12 @@ export default class PlatformerScene extends Phaser.Scene {
         this.demence.scaleX = 0.0;
         this.demence.scaleY = 0.02;
         this.demence.setOrigin(0, 0.5);
+
+        this.jumpSoung = this.sound.add('jumpS');
+        this.coinSoung = this.sound.add('coinS');
+        this.deathSoung = this.sound.add('deathS');
+        this.popSoung = this.sound.add('popS');
+        this.coinSoung.volume = 10;
     }
 
     update(time, delta) {
@@ -293,6 +320,7 @@ export default class PlatformerScene extends Phaser.Scene {
         const pointer = this.input.activePointer;
         const worldPoint = pointer.positionToCamera(this.cameras.main) as any;
         if (pointer.isDown && this.player.nbTile > 0 && this.marker.canDraw) {
+            this.popSoung.play();
             this.marker.canDraw = false;
             this.player.nbTile--;
             this.textBlock.setText(this.player.nbTile);

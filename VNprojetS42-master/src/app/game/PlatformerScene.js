@@ -48,6 +48,22 @@ var PlatformerScene = /** @class */ (function (_super) {
             frameHeight: 96,
             margin: 0,
         });
+        this.load.audio('jumpS', [
+            '../../assets/audio/jump.ogg',
+            '../../assets/audio/jump.mp3'
+        ]);
+        this.load.audio('coinS', [
+            '../../assets/audio/coin.ogg',
+            '../../assets/audio/coin.mp3'
+        ]);
+        this.load.audio('deathS', [
+            '../../assets/audio/die.ogg',
+            '../../assets/audio/die.mp3'
+        ]);
+        this.load.audio('popS', [
+            '../../assets/audio/pop.ogg',
+            '../../assets/audio/pop.mp3'
+        ]);
     };
     PlatformerScene.prototype.create = function () {
         var _this = this;
@@ -89,7 +105,7 @@ var PlatformerScene = /** @class */ (function (_super) {
         this.portal.body.allowGravity = false;
         this.portal.setSize(80, 90);
         this.add
-            .text(16, 100, "Utilise les flèches pour te déplacer \nPour poser des blocs, utilise le clic gauche", {
+            .text(16, 100, "Utilise les flèches pour te déplacer \nPour poser des blocs, utilise le clic gauche\nPour recommencer appuie sur E", {
             font: "16px monospace",
             fill: "#ffffff",
             padding: { x: 20, y: 10 },
@@ -124,6 +140,11 @@ var PlatformerScene = /** @class */ (function (_super) {
             tmp.y -= 30;
             console.log(tmp);
         });
+        this.jumpSoung = this.sound.add('jumpS');
+        this.coinSoung = this.sound.add('coinS');
+        this.deathSoung = this.sound.add('deathS');
+        this.popSoung = this.sound.add('popS');
+        this.coinSoung.volume = 10;
     };
     PlatformerScene.prototype.update = function (time, delta) {
         if (this.lastDemenceUp + 1000 < Date.now()) {
@@ -146,6 +167,7 @@ var PlatformerScene = /** @class */ (function (_super) {
         var pointer = this.input.activePointer;
         var worldPoint = pointer.positionToCamera(this.cameras.main);
         if (pointer.isDown && this.player.nbTile > 0 && this.marker.canDraw) {
+            this.popSoung.play();
             this.marker.canDraw = false;
             this.player.nbTile--;
             this.textBlock.setText(this.player.nbTile);

@@ -42,7 +42,7 @@ export class MenuScene extends Phaser.Scene {
         });
 
         this.playbutton.on('pointerup', (pointer) => {
-            this.scene.start('Level1');
+            this.scene.start('VN01');
         }, this);
 
         this.creditbutton.on('pointerup', (pointer) => {
